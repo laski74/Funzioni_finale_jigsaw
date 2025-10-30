@@ -1,0 +1,1949 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TechnoWave - Analisi di Mercato (Jigsaw Method)</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #000;
+            line-height: 1.6;
+            padding: 20px;
+        }
+        
+        .main-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .header {
+            background: linear-gradient(45deg, #2193b0, #6dd5ed);
+            color: white;
+            padding: 40px;
+            text-align: center;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            margin-bottom: 30px;
+        }
+        
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .header .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.95;
+            margin-top: 10px;
+        }
+        
+        .jigsaw-explanation {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+        }
+        
+        .jigsaw-explanation h2 {
+            color: #667eea;
+            margin-bottom: 15px;
+            font-size: 1.8rem;
+        }
+        
+        .phase-timeline {
+            display: flex;
+            justify-content: space-between;
+            margin: 30px 0;
+            flex-wrap: wrap;
+        }
+        
+        .phase-step {
+            flex: 1;
+            min-width: 200px;
+            text-align: center;
+            padding: 20px;
+            margin: 10px;
+            background: #f8f9ff;
+            border-radius: 10px;
+            position: relative;
+        }
+        
+        .phase-step::after {
+            content: '→';
+            position: absolute;
+            right: -25px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 2rem;
+            color: #667eea;
+        }
+        
+        .phase-step:last-child::after {
+            content: '';
+        }
+        
+        .phase-step h4 {
+            color: #667eea;
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+        }
+        
+        .phase-box {
+            background: #f8f9ff;
+            border-left: 5px solid #667eea;
+            padding: 20px;
+            margin: 15px 0;
+            border-radius: 5px;
+        }
+        
+        .phase-box h3 {
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+        
+        .phase-box.phase1 {
+            border-left-color: #FF6B6B;
+            background: #fff5f5;
+        }
+        
+        .phase-box.phase1 h3 {
+            color: #FF6B6B;
+        }
+        
+        .phase-box.phase2 {
+            border-left-color: #4ECDC4;
+            background: #f0fffe;
+        }
+        
+        .phase-box.phase2 h3 {
+            color: #4ECDC4;
+        }
+        
+        .phase-box.phase3 {
+            border-left-color: #FFD93D;
+            background: #fffef5;
+        }
+        
+        .phase-box.phase3 h3 {
+            color: #ca9b00;
+        }
+        
+        .nav-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin: 30px 0;
+            flex-wrap: wrap;
+        }
+        
+        .nav-button {
+            padding: 15px 30px;
+            font-size: 1rem;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: bold;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        
+        .nav-button.intro {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+        }
+        
+        .nav-button.ceo {
+            background: linear-gradient(45deg, #FF6B6B, #ff8787);
+            color: white;
+        }
+        
+        .nav-button.cfo {
+            background: linear-gradient(45deg, #4ECDC4, #44A08D);
+            color: white;
+        }
+        
+        .nav-button.cto {
+            background: linear-gradient(45deg, #FFD93D, #FFC107);
+            color: #333;
+        }
+        
+        .nav-button.engineering {
+            background: linear-gradient(45deg, #6C5CE7, #A29BFE);
+            color: white;
+        }
+        
+        .nav-button.integration {
+            background: linear-gradient(45deg, #00B894, #00D2A4);
+            color: white;
+        }
+        
+        .nav-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+        }
+        
+        .section {
+            display: none;
+            background: white;
+            border-radius: 15px;
+            padding: 40px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+            margin-bottom: 30px;
+        }
+        
+        .section.active {
+            display: block;
+            animation: fadeIn 0.5s;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .section h2 {
+            color: #667eea;
+            font-size: 2rem;
+            margin-bottom: 20px;
+            border-bottom: 3px solid #667eea;
+            padding-bottom: 10px;
+        }
+        
+        .section.ceo h2 { color: #FF6B6B; border-bottom-color: #FF6B6B; }
+        .section.cfo h2 { color: #4ECDC4; border-bottom-color: #4ECDC4; }
+        .section.cto h2 { color: #ca9b00; border-bottom-color: #ca9b00; }
+        .section.engineering h2 { color: #6C5CE7; border-bottom-color: #6C5CE7; }
+        .section.integration h2 { color: #00B894; border-bottom-color: #00B894; }
+        
+        .story-box {
+            background: linear-gradient(135deg, #667eea15, #764ba215);
+            padding: 25px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border-left: 5px solid #667eea;
+            font-style: italic;
+        }
+        
+        .task-box {
+            background: #f8f9ff;
+            padding: 25px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border: 2px solid #667eea;
+        }
+        
+        .task-box h3 {
+            color: #667eea;
+            margin-bottom: 15px;
+        }
+        
+        .function-box {
+            background: #2c3e50;
+            color: #ecf0f1;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 15px 0;
+            font-family: 'Courier New', monospace;
+            font-size: 1.1rem;
+        }
+        
+        .solution-space {
+            background: #fff;
+            border: 2px dashed #667eea;
+            padding: 20px;
+            margin: 15px 0;
+            min-height: 150px;
+            border-radius: 5px;
+        }
+        
+        .group-composition {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        
+        .group-card {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        
+        .expert-group {
+            display: inline-block;
+            padding: 10px 20px;
+            margin: 5px;
+            border-radius: 20px;
+            font-weight: bold;
+            color: white;
+        }
+        
+        .expert-group.ceo { background: #FF6B6B; }
+        .expert-group.cfo { background: #4ECDC4; }
+        .expert-group.cto { background: #FFD93D; color: #333; }
+        .expert-group.engineering { background: #6C5CE7; }
+        
+        .checklist {
+            background: #f8f9ff;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+        
+        .checklist label {
+            display: block;
+            padding: 10px;
+            margin: 5px 0;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: background 0.2s;
+        }
+        
+        .checklist label:hover {
+            background: #e8e9ff;
+        }
+        
+        .checklist input[type="checkbox"] {
+            margin-right: 10px;
+            transform: scale(1.3);
+            cursor: pointer;
+        }
+        
+        .alert-box {
+            background: #fff3cd;
+            border-left: 5px solid #ffc107;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+        
+        .alert-box.success {
+            background: #d4edda;
+            border-left-color: #28a745;
+        }
+        
+        .alert-box.info {
+            background: #d1ecf1;
+            border-left-color: #17a2b8;
+        }
+        
+        .tip-box {
+            background: #e7f3ff;
+            border-left: 5px solid #2193b0;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 5px;
+        }
+        
+        .tip-box strong {
+            color: #2193b0;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        table th {
+            background: #667eea;
+            color: white;
+            padding: 15px;
+            text-align: left;
+        }
+        
+        table td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        table tr:hover {
+            background: #f8f9ff;
+        }
+        
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 1.8rem;
+            }
+            
+            .nav-buttons {
+                flex-direction: column;
+            }
+            
+            .nav-button {
+                width: 100%;
+            }
+            
+            .phase-timeline {
+                flex-direction: column;
+            }
+            
+            .phase-step::after {
+                content: '↓';
+                right: 50%;
+                top: auto;
+                bottom: -25px;
+                transform: translateX(50%);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="main-container">
+        <div class="header">
+            <h1>🚀 TechnoWave Smart Projector</h1>
+            <div class="subtitle">Analisi di Mercato con Metodo Jigsaw</div>
+            <div class="subtitle">📊 Matematica Applicata al Business</div>
+        </div>
+
+        <div class="nav-buttons">
+            <button class="nav-button intro" onclick="showSection('intro')">📚 Guida Jigsaw</button>
+            <button class="nav-button ceo" onclick="showSection('ceo')">👔 CEO - Marketing</button>
+            <button class="nav-button cfo" onclick="showSection('cfo')">💰 CFO - Finanza</button>
+            <button class="nav-button cto" onclick="showSection('cto')">📊 CTO - Ricavi</button>
+            <button class="nav-button engineering" onclick="showSection('engineering')">⚙️ Engineering</button>
+            <button class="nav-button integration" onclick="showSection('integration')">🎯 Integrazione</button>
+        </div>
+
+        <!-- SEZIONE INTRODUTTIVA -->
+        <div id="intro" class="section active">
+            <h2>📚 Guida al Metodo Jigsaw</h2>
+            
+            <div class="story-box">
+                <strong>📖 LA STORIA:</strong><br><br>
+                TechnoWave ha sviluppato un nuovo proiettore "smart" per il mercato professionale. 
+                Il team deve analizzare quattro aspetti fondamentali per il lancio:<br>
+                • <strong>Marketing</strong> (CEO): Posizionamento e quota di mercato<br>
+                • <strong>Finanza</strong> (CFO): Costi e break-even<br>
+                • <strong>Ricavi</strong> (CTO): Domanda e pricing<br>
+                • <strong>Ingegneria</strong> (Engineering): Penetrazione e crescita<br><br>
+                Ogni team diventerà esperto nel proprio settore e poi condividerà le conoscenze per creare un <strong>business plan integrato</strong>.
+            </div>
+
+            <h3>🔄 Le 3 Fasi del Metodo Jigsaw</h3>
+            
+            <div class="phase-timeline">
+                <div class="phase-step">
+                    <h4>FASE 1</h4>
+                    <p><strong>Gruppi Esperti</strong></p>
+                    <p>2 ore</p>
+                    <p>Tutti i CEO insieme, tutti i CFO insieme, ecc.</p>
+                </div>
+                <div class="phase-step">
+                    <h4>FASE 2</h4>
+                    <p><strong>Ritorno ai Gruppi Base</strong></p>
+                    <p>1.5 ore</p>
+                    <p>Ogni esperto condivide nel gruppo originale</p>
+                </div>
+                <div class="phase-step">
+                    <h4>FASE 3</h4>
+                    <p><strong>Integrazione</strong></p>
+                    <p>3-4 ore</p>
+                    <p>Business plan completo + presentazione</p>
+                </div>
+            </div>
+
+            <div class="phase-box phase1">
+                <h3>FASE 1: GRUPPI ESPERTI (2 ore)</h3>
+                <p><strong>Obiettivo:</strong> Diventare esperti in uno specifico aspetto dell'analisi.</p>
+                <p><strong>Organizzazione:</strong></p>
+                <ul style="margin-left: 30px; margin-top: 10px;">
+                    <li>Tutti i CEO lavorano insieme sulla <strong>funzione quota di mercato</strong></li>
+                    <li>Tutti i CFO lavorano insieme sulla <strong>funzione costi</strong></li>
+                    <li>Tutti i CTO lavorano insieme sulla <strong>funzione domanda</strong></li>
+                    <li>Tutti gli Engineering lavorano insieme sulla <strong>funzione crescita</strong></li>
+                </ul>
+                <p style="margin-top: 15px;"><strong>Compiti:</strong></p>
+                <ul style="margin-left: 30px; margin-top: 10px;">
+                    <li>Studiare la funzione matematica assegnata</li>
+                    <li>Analizzare dominio, zeri, segno, asintoti</li>
+                    <li>Calcolare massimi/minimi (con vertice parabola o studio del segno)</li>
+                    <li>Preparare una spiegazione chiara per i compagni</li>
+                </ul>
+            </div>
+
+            <div class="phase-box phase2">
+                <h3>FASE 2: RITORNO AI GRUPPI BASE (1.5 ore)</h3>
+                <p><strong>Obiettivo:</strong> Condividere le competenze acquisite.</p>
+                <p><strong>Organizzazione:</strong> Ogni gruppo base ha 1 CEO + 1 CFO + 1 CTO + 1 Engineering</p>
+                <p style="margin-top: 15px;"><strong>Modalità:</strong></p>
+                <ul style="margin-left: 30px; margin-top: 10px;">
+                    <li>Ogni esperto spiega la propria funzione (max 15 minuti)</li>
+                    <li>Gli altri prendono appunti e fanno domande</li>
+                    <li>Focus su: risultati chiave, interpretazione, limiti del modello</li>
+                </ul>
+            </div>
+
+            <div class="phase-box phase3">
+                <h3>FASE 3: INTEGRAZIONE E BUSINESS PLAN (3-4 ore)</h3>
+                <p><strong>Obiettivo:</strong> Creare una strategia integrata che bilancia tutti gli aspetti.</p>
+                <p style="margin-top: 15px;"><strong>Compiti:</strong></p>
+                <ul style="margin-left: 30px; margin-top: 10px;">
+                    <li>Identificare <strong>contraddizioni</strong> tra le diverse analisi</li>
+                    <li>Esempio: Il prezzo per massimizzare la quota di mercato ≠ prezzo per massimizzare il profitto</li>
+                    <li>Trovare <strong>compromessi</strong> ragionevoli</li>
+                    <li>Scrivere un <strong>business plan</strong> di 2-3 pagine</li>
+                    <li>Preparare una <strong>presentazione</strong> di 10 minuti</li>
+                </ul>
+            </div>
+
+            <h3>👥 Composizione dei Gruppi Base</h3>
+            <div class="group-composition">
+                <div class="group-card">
+                    <h4>GRUPPO 1</h4>
+                    <p>CEO: [Nome]</p>
+                    <p>CFO: [Nome]</p>
+                    <p>CTO: [Nome]</p>
+                    <p>ENG: [Nome]</p>
+                </div>
+                <div class="group-card">
+                    <h4>GRUPPO 2</h4>
+                    <p>CEO: [Nome]</p>
+                    <p>CFO: [Nome]</p>
+                    <p>CTO: [Nome]</p>
+                    <p>ENG: [Nome]</p>
+                </div>
+                <div class="group-card">
+                    <h4>GRUPPO 3</h4>
+                    <p>CEO: [Nome]</p>
+                    <p>CFO: [Nome]</p>
+                    <p>CTO: [Nome]</p>
+                    <p>ENG: [Nome]</p>
+                </div>
+                <div class="group-card">
+                    <h4>GRUPPO 4</h4>
+                    <p>CEO: [Nome]</p>
+                    <p>CFO: [Nome]</p>
+                    <p>CTO: [Nome]</p>
+                    <p>ENG: [Nome]</p>
+                </div>
+            </div>
+
+            <div class="alert-box info">
+                <strong>⏰ TEMPISTICHE COMPLESSIVE:</strong><br><br>
+                • <strong>Lezione 1</strong> (2 ore): FASE 1 - Gruppi esperti<br>
+                • <strong>Lezione 2</strong> (1.5 ore): FASE 2 - Ritorno e condivisione<br>
+                • <strong>Lezioni 3-4</strong> (3-4 ore): FASE 3 - Business plan e presentazioni<br>
+                • <strong>Lezione 5</strong> (2 ore): Presentazioni finali dei 4 gruppi
+            </div>
+
+            <h3>📊 Criteri di Valutazione</h3>
+            <table>
+                <tr>
+                    <th>Aspetto</th>
+                    <th>Peso</th>
+                    <th>Cosa Valutiamo</th>
+                </tr>
+                <tr>
+                    <td><strong>Analisi matematica (Fase 1)</strong></td>
+                    <td>30%</td>
+                    <td>Correttezza calcoli, comprensione funzioni</td>
+                </tr>
+                <tr>
+                    <td><strong>Condivisione expertise (Fase 2)</strong></td>
+                    <td>20%</td>
+                    <td>Chiarezza spiegazione, capacità di sintesi</td>
+                </tr>
+                <tr>
+                    <td><strong>Business plan (Fase 3)</strong></td>
+                    <td>30%</td>
+                    <td>Integrazione analisi, compromessi ragionevoli</td>
+                </tr>
+                <tr>
+                    <td><strong>Presentazione finale</strong></td>
+                    <td>20%</td>
+                    <td>Chiarezza, efficacia comunicativa, lavoro di team</td>
+                </tr>
+            </table>
+
+            <div class="alert-box success">
+                <strong>✅ OBIETTIVI MATEMATICI:</strong><br><br>
+                Questo progetto valuta la padronanza di:<br>
+                • Studio di funzioni (dominio, zeri, segno, immagine, continuità)<br>
+                • Massimi e minimi usando il <strong>vertice della parabola</strong> e <strong>studio grafico</strong><br>
+                • Funzioni esponenziali e logaritmiche<br>
+                • <strong>Limiti e asintoti</strong><br>
+                • Analisi di <strong>incrementi finiti</strong> per velocità di variazione<br>
+                • Interpretazione economica di modelli matematici
+            </div>
+        </div>
+
+        <!-- SEZIONE CEO -->
+        <div id="ceo" class="section ceo">
+            <h2>👔 GRUPPO ESPERTI CEO - Marketing & Posizionamento</h2>
+            
+            <div class="story-box">
+                <strong>🎯 IL TUO RUOLO:</strong><br><br>
+                Come CEO, devi analizzare come il <strong>prezzo</strong> del proiettore influenza la <strong>quota di mercato</strong> di TechnoWave.
+                Una quota di mercato più alta significa più vendite, ma a quale prezzo?
+            </div>
+
+            <div class="alert-box info">
+                <strong>🎯 OBIETTIVO DI QUESTO GRUPPO:</strong><br>
+                Tutti i CEO lavorano insieme per diventare esperti in:<br>
+                • Modellazione della quota di mercato<br>
+                • Analisi dei competitor (prezzo di riferimento)<br>
+                • Identificazione del prezzo ottimale per quota massima<br>
+                • Studio di funzioni razionali (asintoti, massimi)<br><br>
+                <strong>⏰ TEMPO: 2 ore</strong>
+            </div>
+
+            <h3>📊 LA FUNZIONE QUOTA DI MERCATO</h3>
+            <div class="function-box">
+                M(p) = 100 · (2000 - p) / (p + 500)<br><br>
+                dove:<br>
+                • p = prezzo del proiettore (€)<br>
+                • M(p) = quota di mercato (%)<br>
+                • Il competitor principale costa 1200€
+            </div>
+
+            <div class="task-box">
+                <h3>📝 TASK 1: Analisi Preliminare (30 minuti)</h3>
+                
+                <div class="solution-space">
+                    <strong>A) DOMINIO:</strong><br><br>
+                    Quali valori può assumere p?<br>
+                    D = ___________________________<br><br>
+                    C'è qualche valore da escludere? (Denominatore = 0?)<br>
+                    ___________________________
+                </div>
+
+                <div class="solution-space">
+                    <strong>B) ZERI DELLA FUNZIONE:</strong><br><br>
+                    Per quale prezzo la quota di mercato è zero?<br>
+                    M(p) = 0 quando ___________________________<br><br>
+                    Interpretazione: A che prezzo nessuno compra il nostro prodotto?
+                </div>
+
+                <div class="solution-space">
+                    <strong>C) ASINTOTI:</strong><br><br>
+                    <strong>Asintoto verticale:</strong> x = _____ (quando il denominatore = 0)<br><br>
+                    <strong>Asintoto orizzontale:</strong><br>
+                    lim (p→+∞) M(p) = lim (p→+∞) 100(2000-p)/(p+500) = _____<br><br>
+                    <em>Suggerimento: Dividi numeratore e denominatore per p, poi calcola il limite</em><br><br>
+                    Interpretazione: A cosa tende la quota di mercato se aumentiamo troppo il prezzo?
+                </div>
+            </div>
+
+            <div class="task-box">
+                <h3>📝 TASK 2: Ottimizzazione (45 minuti)</h3>
+                
+                <div class="tip-box">
+                    <strong>💡 STRATEGIA SENZA DERIVATE:</strong><br>
+                    Per trovare il massimo di M(p), possiamo:<br>
+                    1. Riscrivere la funzione in forma più semplice<br>
+                    2. Completare il quadrato o usare tecniche algebriche<br>
+                    3. Oppure valutare M(p) per diversi valori e tracciare il grafico
+                </div>
+
+                <div class="solution-space">
+                    <strong>A) SEMPLIFICAZIONE DELLA FUNZIONE:</strong><br><br>
+                    Riscrivi M(p) eseguendo la divisione polinomiale:<br>
+                    M(p) = 100 · [(2000-p)/(p+500)]<br><br>
+                    Suggerimento: Scrivi (2000-p) = -1·(p+500) + 2500<br><br>
+                    M(p) = 100 · [-1 + 2500/(p+500)]<br>
+                    M(p) = -100 + 250000/(p+500)<br><br>
+                    Questa forma è più comoda per lo studio!
+                </div>
+
+                <div class="solution-space">
+                    <strong>B) TABELLA DI VALORI:</strong><br><br>
+                    Calcola M(p) per diversi prezzi:<br><br>
+                    <table style="width: 100%; margin-top: 10px;">
+                        <tr>
+                            <th>Prezzo (€)</th>
+                            <th>M(p) (%)</th>
+                        </tr>
+                        <tr>
+                            <td>500</td>
+                            <td>M(500) = -100 + 250000/1000 = _____</td>
+                        </tr>
+                        <tr>
+                            <td>1000</td>
+                            <td>M(1000) = -100 + 250000/1500 = _____</td>
+                        </tr>
+                        <tr>
+                            <td>1200</td>
+                            <td>M(1200) = _____</td>
+                        </tr>
+                        <tr>
+                            <td>1500</td>
+                            <td>M(1500) = _____</td>
+                        </tr>
+                        <tr>
+                            <td>2000</td>
+                            <td>M(2000) = _____</td>
+                        </tr>
+                    </table>
+                </div>
+
+                <div class="solution-space">
+                    <strong>C) STUDIO DEL SEGNO E CRESCENZA:</strong><br><br>
+                    Per capire dove M(p) cresce o decresce, osserva la forma:<br>
+                    M(p) = -100 + 250000/(p+500)<br><br>
+                    Quando p aumenta:<br>
+                    • Il termine 250000/(p+500) __________ (aumenta/diminuisce)<br>
+                    • Quindi M(p) __________ (aumenta/diminuisce)<br><br>
+                    Conclusione: M(p) è sempre __________ (crescente/decrescente) nel dominio realistico.<br><br>
+                    Quindi il massimo di M(p) si ha al prezzo più __________ (alto/basso) possibile!
+                </div>
+
+                <div class="solution-space">
+                    <strong>D) PREZZO OTTIMALE PER QUOTA MASSIMA:</strong><br><br>
+                    Qual è il prezzo che massimizza la quota di mercato (considerando p > 0)?<br>
+                    p* = ___________________________<br><br>
+                    Quota di mercato corrispondente: M(p*) = _____% <br><br>
+                    <strong>⚠️ Problema strategico:</strong> Vendere a questo prezzo potrebbe non massimizzare i profitti!
+                </div>
+            </div>
+
+            <div class="task-box">
+                <h3>📝 TASK 3: Analisi Competitor (30 minuti)</h3>
+                
+                <div class="solution-space">
+                    <strong>A) QUOTA A PREZZO COMPETITOR:</strong><br><br>
+                    Il competitor principale vende a 1200€. Calcola la nostra quota se vendiamo allo stesso prezzo:<br>
+                    M(1200) = ___________________________<br><br>
+                    Interpretazione: ___________________________
+                </div>
+
+                <div class="solution-space">
+                    <strong>B) STRATEGIA DI PRICING:</strong><br><br>
+                    Se vogliamo il 60% di quota di mercato, quale deve essere il nostro prezzo?<br>
+                    M(p) = 60<br>
+                    -100 + 250000/(p+500) = 60<br>
+                    250000/(p+500) = 160<br>
+                    p + 500 = ___________________________<br>
+                    p = ___________________________€<br><br>
+                    Interpretazione: ___________________________
+                </div>
+
+                <div class="solution-space">
+                    <strong>C) GRAFICO QUALITATIVO:</strong><br><br>
+                    Disegna un grafico approssimativo di M(p):<br>
+                    • Segna gli asintoti<br>
+                    • Indica lo zero<br>
+                    • Mostra che è decrescente<br>
+                    • Evidenzia il punto (1200, M(1200)) del competitor<br><br>
+                    [Spazio per il grafico]
+                </div>
+            </div>
+
+            <div class="alert-box">
+                <strong>📋 PREPARAZIONE PER IL GRUPPO BASE:</strong><br><br>
+                Prima di tornare al tuo gruppo base, assicurati di saper spiegare:<br>
+                ✅ Come il prezzo influenza la quota di mercato<br>
+                ✅ Perché M(p) è decrescente (prezzo alto → quota bassa)<br>
+                ✅ Il significato degli asintoti<br>
+                ✅ Il trade-off tra quota di mercato e prezzo<br>
+                ✅ Il posizionamento rispetto al competitor
+            </div>
+
+            <div class="checklist">
+                <h4>✓ Checklist Competenze CEO</h4>
+                <label><input type="checkbox"> Studio di funzione razionale completo</label>
+                <label><input type="checkbox"> Calcolo e interpretazione asintoti</label>
+                <label><input type="checkbox"> Studio di crescenza con analisi algebrica</label>
+                <label><input type="checkbox"> Interpretazione economica del modello</label>
+                <label><input type="checkbox"> Analisi competitiva (benchmark)</label>
+                <label><input type="checkbox"> Trade-off quota vs prezzo</label>
+                <label><input type="checkbox"> Grafico qualitativo chiaro</label>
+            </div>
+        </div>
+
+        <!-- SEZIONE CFO -->
+        <div id="cfo" class="section cfo">
+            <h2>💰 GRUPPO ESPERTI CFO - Finanza & Break-Even</h2>
+            
+            <div class="story-box">
+                <strong>🎯 IL TUO RUOLO:</strong><br><br>
+                Come CFO, devi analizzare i <strong>costi di produzione</strong> e calcolare il <strong>break-even point</strong> 
+                e il <strong>profitto massimo</strong>. Il tuo obiettivo è garantire la sostenibilità finanziaria di TechnoWave!
+            </div>
+
+            <div class="alert-box info">
+                <strong>🎯 OBIETTIVO DI QUESTO GRUPPO:</strong><br>
+                Tutti i CFO lavorano insieme per diventare esperti in:<br>
+                • Modellazione dei costi di produzione<br>
+                • Calcolo del break-even point<br>
+                • Massimizzazione del profitto usando il <strong>vertice della parabola</strong><br>
+                • Analisi di scenario per prezzi diversi<br><br>
+                <strong>⏰ TEMPO: 2 ore</strong>
+            </div>
+
+            <h3>📊 LE FUNZIONI ECONOMICHE</h3>
+            <div class="function-box">
+                COSTI:<br>
+                C(x) = 500000 + 400x + 0.05x²<br><br>
+                RICAVI (assumendo prezzo p):<br>
+                R(x) = p · x<br><br>
+                PROFITTO:<br>
+                P(x) = R(x) - C(x) = px - 500000 - 400x - 0.05x²<br><br>
+                dove:<br>
+                • x = quantità prodotta (unità)<br>
+                • p = prezzo di vendita (€)<br>
+                • 500000€ = costi fissi<br>
+                • 400€ = costo variabile unitario<br>
+                • 0.05x² = costi di scala (inefficienza per grandi volumi)
+            </div>
+
+            <div class="task-box">
+                <h3>📝 TASK 1: Analisi dei Costi (30 minuti)</h3>
+                
+                <div class="solution-space">
+                    <strong>A) COSTI FISSI vs VARIABILI:</strong><br><br>
+                    Costi fissi (indipendenti da x): _________________€<br>
+                    Costi variabili unitari (per unità): _________________€<br>
+                    Termine di scala (coefficiente di x²): _________________<br><br>
+                    Cosa succede se produciamo troppe unità? ___________________________
+                </div>
+
+                <div class="solution-space">
+                    <strong>B) COSTO MEDIO:</strong><br><br>
+                    Il costo medio per unità è:<br>
+                    CM(x) = C(x)/x = (500000 + 400x + 0.05x²)/x<br>
+                    CM(x) = 500000/x + 400 + 0.05x<br><br>
+                    Calcola il costo medio per diverse produzioni:<br>
+                    <table style="width: 100%; margin-top: 10px;">
+                        <tr>
+                            <th>Unità (x)</th>
+                            <th>C(x) totale (€)</th>
+                            <th>CM(x) medio (€)</th>
+                        </tr>
+                        <tr>
+                            <td>1000</td>
+                            <td>_________</td>
+                            <td>_________</td>
+                        </tr>
+                        <tr>
+                            <td>5000</td>
+                            <td>_________</td>
+                            <td>_________</td>
+                        </tr>
+                        <tr>
+                            <td>10000</td>
+                            <td>_________</td>
+                            <td>_________</td>
+                        </tr>
+                        <tr>
+                            <td>20000</td>
+                            <td>_________</td>
+                            <td>_________</td>
+                        </tr>
+                    </table>
+                </div>
+
+                <div class="solution-space">
+                    <strong>C) INCREMENTO DI COSTO:</strong><br><br>
+                    Quanto costa produrre altre 1000 unità quando siamo già a 10000?<br><br>
+                    ΔC = C(11000) - C(10000) = ___________________________<br><br>
+                    Costo incrementale per unità = ΔC / 1000 = €___________<br><br>
+                    Confrontalo con il costo medio a 10000 unità: è maggiore o minore?<br>
+                    ___________________________<br><br>
+                    <em>Questo ci dice come i costi variano quando aumentiamo la produzione</em>
+                </div>
+            </div>
+
+            <div class="task-box">
+                <h3>📝 TASK 2: Break-Even Point (40 minuti)</h3>
+                
+                <div class="solution-space">
+                    <strong>A) DEFINIZIONE:</strong><br><br>
+                    Il break-even è quando:<br>
+                    R(x) = C(x) oppure P(x) = 0<br><br>
+                    Significa che i ricavi coprono esattamente i costi (profitto = 0).
+                </div>
+
+                <div class="solution-space">
+                    <strong>B) CALCOLO CON p = 1000€:</strong><br><br>
+                    Se vendiamo a 1000€ per unità:<br>
+                    R(x) = 1000x<br>
+                    C(x) = 500000 + 400x + 0.05x²<br><br>
+                    Break-even quando R(x) = C(x):<br>
+                    1000x = 500000 + 400x + 0.05x²<br>
+                    0 = 0.05x² - 600x + 500000<br>
+                    Oppure (moltiplicando per 20):<br>
+                    x² - 12000x + 10000000 = 0<br><br>
+                    Usa la formula risolutiva:<br>
+                    x = [12000 ± √(144000000 - 40000000)] / 2<br>
+                    x = [12000 ± √104000000] / 2<br>
+                    x = [12000 ± 10198] / 2<br><br>
+                    x₁ = ___________________<br>
+                    x₂ = ___________________<br><br>
+                    Interpretazione: Ci sono DUE break-even! Perché?
+                </div>
+
+                <div class="solution-space">
+                    <strong>C) INTERPRETAZIONE DEI DUE BREAK-EVEN:</strong><br><br>
+                    x₁ (più piccolo) = _____ unità → Break-even "inferiore"<br>
+                    x₂ (più grande) = _____ unità → Break-even "superiore"<br><br>
+                    Tra x₁ e x₂ → Profitto __________ (positivo/negativo)<br>
+                    Prima di x₁ → Profitto __________ (positivo/negativo)<br>
+                    Dopo x₂ → Profitto __________ (positivo/negativo)<br><br>
+                    <strong>Spiegazione:</strong> I costi di scala (0.05x²) fanno crescere i costi più velocemente 
+                    dei ricavi a volumi molto alti, quindi oltre x₂ andiamo in perdita!
+                </div>
+
+                <div class="solution-space">
+                    <strong>D) GRAFICO BREAK-EVEN:</strong><br><br>
+                    Disegna su un grafico:<br>
+                    • La funzione C(x) (parabola che apre verso l'alto)<br>
+                    • La funzione R(x) (retta)<br>
+                    • I due punti di intersezione (break-even)<br>
+                    • La zona di profitto (tra x₁ e x₂)<br><br>
+                    [Spazio per il grafico]
+                </div>
+            </div>
+
+            <div class="task-box">
+                <h3>📝 TASK 3: Massimizzazione Profitto (50 minuti)</h3>
+                
+                <div class="solution-space">
+                    <strong>A) FUNZIONE PROFITTO (con p = 1000€):</strong><br><br>
+                    P(x) = R(x) - C(x)<br>
+                    P(x) = 1000x - (500000 + 400x + 0.05x²)<br>
+                    P(x) = -0.05x² + 600x - 500000<br><br>
+                    Questa è una parabola con:<br>
+                    • a = _____<br>
+                    • b = _____<br>
+                    • c = _____<br><br>
+                    La concavità è rivolta verso _________ (perché a < 0)
+                </div>
+
+                <div class="tip-box">
+                    <strong>💡 FORMULA DEL VERTICE:</strong><br>
+                    Per una parabola y = ax² + bx + c, il vertice (massimo se a<0) si trova a:<br>
+                    x_V = -b/(2a)<br>
+                    y_V = -Δ/(4a) = -(b² - 4ac)/(4a)<br><br>
+                    Oppure calcola y_V = P(x_V) sostituendo x_V nella funzione.
+                </div>
+
+                <div class="solution-space">
+                    <strong>B) PRODUZIONE OTTIMALE:</strong><br><br>
+                    Usando la formula del vertice:<br>
+                    x* = -b/(2a) = -600/(2·(-0.05)) = 600/0.1 = ___________________<br><br>
+                    Questa è la quantità che massimizza il profitto!
+                </div>
+
+                <div class="solution-space">
+                    <strong>C) PROFITTO MASSIMO:</strong><br><br>
+                    P(x*) = P(6000) = -0.05(6000)² + 600(6000) - 500000<br>
+                    P(6000) = -0.05(36000000) + 3600000 - 500000<br>
+                    P(6000) = -1800000 + 3600000 - 500000<br>
+                    P(6000) = ___________________€<br><br>
+                    Oppure con la formula:<br>
+                    P(x*) = -Δ/(4a) = -(600² - 4·(-0.05)·(-500000))/(4·(-0.05))<br>
+                    P(x*) = -(360000 - 100000)/(-0.2) = -260000/(-0.2) = ___________________€
+                </div>
+
+                <div class="solution-space">
+                    <strong>D) VERIFICA CHE SIA TRA I BREAK-EVEN:</strong><br><br>
+                    Ricordi i break-even x₁ e x₂ calcolati prima?<br>
+                    x₁ ≈ _____ unità<br>
+                    x* = 6000 unità<br>
+                    x₂ ≈ _____ unità<br><br>
+                    Verifica: x₁ < x* < x₂? _____<br><br>
+                    Se sì, conferma che il massimo profitto è nella zona corretta!
+                </div>
+
+                <div class="solution-space">
+                    <strong>E) ANALISI DI SENSIBILITÀ:</strong><br><br>
+                    Cosa succede se il prezzo cambia?<br><br>
+                    Con p = 800€:<br>
+                    P(x) = 800x - 500000 - 400x - 0.05x²<br>
+                    P(x) = -0.05x² + 400x - 500000<br>
+                    x* = -400/(2·(-0.05)) = ___________________<br>
+                    P(x*) = ___________________€<br><br>
+                    Con p = 1200€:<br>
+                    P(x) = -0.05x² + 800x - 500000<br>
+                    x* = ___________________<br>
+                    P(x*) = ___________________€<br><br>
+                    Conclusione: Prezzi più alti portano a profitti __________ (maggiori/minori)
+                </div>
+            </div>
+
+            <div class="alert-box">
+                <strong>📋 PREPARAZIONE PER IL GRUPPO BASE:</strong><br><br>
+                Prima di tornare al tuo gruppo base, assicurati di saper spiegare:<br>
+                ✅ La struttura dei costi (fissi + variabili + scala)<br>
+                ✅ Il significato dei due break-even points<br>
+                ✅ Come trovare il massimo profitto con il vertice della parabola<br>
+                ✅ Perché produrre troppo fa diminuire i profitti<br>
+                ✅ Come il prezzo influenza la quantità ottimale
+            </div>
+
+            <div class="checklist">
+                <h4>✓ Checklist Competenze CFO</h4>
+                <label><input type="checkbox"> Analisi costi fissi e variabili</label>
+                <label><input type="checkbox"> Calcolo costo medio e incrementale</label>
+                <label><input type="checkbox"> Equazioni di secondo grado (break-even)</label>
+                <label><input type="checkbox"> Interpretazione di due soluzioni</label>
+                <label><input type="checkbox"> Calcolo del profitto massimo (vertice parabola)</label>
+                <label><input type="checkbox"> Studio della concavità</label>
+                <label><input type="checkbox"> Analisi di sensibilità al prezzo</label>
+            </div>
+        </div>
+
+        <!-- SEZIONE CTO -->
+        <div id="cto" class="section cto">
+            <h2>📊 GRUPPO ESPERTI CTO - Domanda & Ricavi</h2>
+            
+            <div class="story-box">
+                <strong>🎯 IL TUO RUOLO:</strong><br><br>
+                Come CTO, devi capire la <strong>curva di domanda</strong> del mercato: 
+                quanti proiettori verranno comprati a diversi prezzi? E soprattutto, 
+                quale prezzo massimizza i <strong>ricavi totali</strong>?
+            </div>
+
+            <div class="alert-box info">
+                <strong>🎯 OBIETTIVO DI QUESTO GRUPPO:</strong><br>
+                Tutti i CTO lavorano insieme per diventare esperti in:<br>
+                • Modellazione della funzione di domanda<br>
+                • Analisi prezzo-domanda (legge della domanda)<br>
+                • Calcolo dei ricavi R = p · D(p)<br>
+                • Massimizzazione dei ricavi con il <strong>vertice della parabola</strong><br><br>
+                <strong>⏰ TEMPO: 2 ore</strong>
+            </div>
+
+            <h3>📊 LE FUNZIONI DI DOMANDA E RICAVO</h3>
+            <div class="function-box">
+                DOMANDA:<br>
+                D(p) = 20000 - 10p<br><br>
+                RICAVI:<br>
+                R(p) = p · D(p) = p(20000 - 10p) = 20000p - 10p²<br><br>
+                dove:<br>
+                • p = prezzo del proiettore (€)<br>
+                • D(p) = quantità domandata (unità)<br>
+                • R(p) = ricavi totali (€)
+            </div>
+
+            <div class="task-box">
+                <h3>📝 TASK 1: Analisi della Domanda (30 minuti)</h3>
+                
+                <div class="solution-space">
+                    <strong>A) INTERPRETAZIONE:</strong><br><br>
+                    Quando p = 0€ (gratis): D(0) = ___________________<br>
+                    Quando p = 2000€: D(2000) = ___________________<br><br>
+                    Cosa significa questo secondo risultato? ___________________________
+                </div>
+
+                <div class="solution-space">
+                    <strong>B) PREZZO DI MERCATO MASSIMO:</strong><br><br>
+                    A quale prezzo la domanda diventa zero?<br>
+                    D(p) = 0<br>
+                    20000 - 10p = 0<br>
+                    p_max = ___________________€<br><br>
+                    Questo è il prezzo massimo oltre il quale nessuno compra!
+                </div>
+
+                <div class="solution-space">
+                    <strong>C) COEFFICIENTE DI ELASTICITÀ (intuitivo):</strong><br><br>
+                    Il coefficiente -10 nella funzione D(p) = 20000 - 10p indica che:<br>
+                    • Se il prezzo aumenta di 1€, la domanda diminuisce di _____ unità<br>
+                    • Se il prezzo aumenta di 100€, la domanda diminuisce di _____ unità<br><br>
+                    Questa è la <strong>sensibilità</strong> della domanda al prezzo!
+                </div>
+
+                <div class="solution-space">
+                    <strong>D) TABELLA DOMANDA:</strong><br><br>
+                    <table style="width: 100%; margin-top: 10px;">
+                        <tr>
+                            <th>Prezzo (€)</th>
+                            <th>Domanda (unità)</th>
+                            <th>Interpretazione</th>
+                        </tr>
+                        <tr>
+                            <td>500</td>
+                            <td>D(500) = _________</td>
+                            <td>Alta domanda</td>
+                        </tr>
+                        <tr>
+                            <td>1000</td>
+                            <td>D(1000) = _________</td>
+                            <td>Prezzo medio</td>
+                        </tr>
+                        <tr>
+                            <td>1200</td>
+                            <td>D(1200) = _________</td>
+                            <td>Prezzo competitor</td>
+                        </tr>
+                        <tr>
+                            <td>1500</td>
+                            <td>D(1500) = _________</td>
+                            <td>Prezzo alto</td>
+                        </tr>
+                        <tr>
+                            <td>1800</td>
+                            <td>D(1800) = _________</td>
+                            <td>Prezzo premium</td>
+                        </tr>
+                    </table>
+                </div>
+
+                <div class="solution-space">
+                    <strong>E) GRAFICO DELLA DOMANDA:</strong><br><br>
+                    Disegna il grafico di D(p):<br>
+                    • È una retta<br>
+                    • Intercetta con asse p quando D = 0 (p = 2000)<br>
+                    • Intercetta con asse D quando p = 0 (D = 20000)<br>
+                    • Coefficiente angolare negativo (retta decrescente)<br><br>
+                    [Spazio per il grafico]
+                </div>
+            </div>
+
+            <div class="task-box">
+                <h3>📝 TASK 2: Analisi dei Ricavi (40 minuti)</h3>
+                
+                <div class="solution-space">
+                    <strong>A) FUNZIONE DEI RICAVI:</strong><br><br>
+                    R(p) = p · D(p) = p(20000 - 10p)<br>
+                    R(p) = 20000p - 10p²<br><br>
+                    Questa è una parabola con:<br>
+                    • a = _____<br>
+                    • b = _____<br>
+                    • c = _____<br><br>
+                    La concavità è rivolta verso _________ (perché a < 0)
+                </div>
+
+                <div class="solution-space">
+                    <strong>B) RICAVI A DIVERSI PREZZI:</strong><br><br>
+                    <table style="width: 100%; margin-top: 10px;">
+                        <tr>
+                            <th>Prezzo (€)</th>
+                            <th>Domanda</th>
+                            <th>Ricavi R = p · D (€)</th>
+                        </tr>
+                        <tr>
+                            <td>500</td>
+                            <td>15000</td>
+                            <td>_________</td>
+                        </tr>
+                        <tr>
+                            <td>1000</td>
+                            <td>10000</td>
+                            <td>_________</td>
+                        </tr>
+                        <tr>
+                            <td>1200</td>
+                            <td>8000</td>
+                            <td>_________</td>
+                        </tr>
+                        <tr>
+                            <td>1500</td>
+                            <td>5000</td>
+                            <td>_________</td>
+                        </tr>
+                        <tr>
+                            <td>1800</td>
+                            <td>2000</td>
+                            <td>_________</td>
+                        </tr>
+                    </table><br>
+                    Quale prezzo dà i ricavi più alti nella tabella? ___________________
+                </div>
+
+                <div class="solution-space">
+                    <strong>C) ZERI DI R(p):</strong><br><br>
+                    Quando i ricavi sono zero?<br>
+                    R(p) = 0<br>
+                    p(20000 - 10p) = 0<br><br>
+                    Due soluzioni:<br>
+                    p₁ = _____ (se regaliamo il prodotto)<br>
+                    p₂ = _____ (se il prezzo è troppo alto e nessuno compra)<br><br>
+                    Tra questi due estremi, i ricavi sono positivi!
+                </div>
+
+                <div class="solution-space">
+                    <strong>D) GRAFICO DEI RICAVI:</strong><br><br>
+                    Disegna il grafico di R(p):<br>
+                    • Parabola con concavità verso il basso<br>
+                    • Passa per (0, 0) e (2000, 0)<br>
+                    • Ha un massimo nel mezzo<br><br>
+                    [Spazio per il grafico]
+                </div>
+            </div>
+
+            <div class="task-box">
+                <h3>📝 TASK 3: Massimizzazione Ricavi (50 minuti)</h3>
+                
+                <div class="tip-box">
+                    <strong>💡 METODO DEL VERTICE:</strong><br>
+                    Per R(p) = -10p² + 20000p:<br>
+                    • a = -10<br>
+                    • b = 20000<br><br>
+                    Il massimo si trova a:<br>
+                    p* = -b/(2a) = -20000/(2·(-10)) = 20000/20 = 1000€
+                </div>
+
+                <div class="solution-space">
+                    <strong>A) PREZZO OTTIMALE:</strong><br><br>
+                    Usando la formula del vertice:<br>
+                    p* = -b/(2a) = ___________________€<br><br>
+                    Questo è il prezzo che massimizza i ricavi!<br><br>
+                    <strong>Interpretazione economica:</strong> È esattamente a metà tra 0€ e 2000€!<br>
+                    Questo è un risultato generale: per domanda lineare, il prezzo ottimale è sempre 
+                    a metà tra zero e il prezzo massimo di mercato.
+                </div>
+
+                <div class="solution-space">
+                    <strong>B) RICAVI MASSIMI:</strong><br><br>
+                    R(p*) = R(1000) = -10(1000)² + 20000(1000)<br>
+                    R(1000) = -10000000 + 20000000<br>
+                    R(1000) = ___________________€<br><br>
+                    Oppure con la formula:<br>
+                    R(p*) = -Δ/(4a) = -(20000² - 4·(-10)·0)/(4·(-10))<br>
+                    R(p*) = -400000000/(-40) = ___________________€<br><br>
+                    Questo conferma che i ricavi massimi sono 10 milioni di euro!
+                </div>
+
+                <div class="solution-space">
+                    <strong>C) DOMANDA AL PREZZO OTTIMALE:</strong><br><br>
+                    Quante unità verranno vendute a p* = 1000€?<br>
+                    D(1000) = 20000 - 10(1000) = ___________________<br><br>
+                    Verifica: R = p · D = 1000 · 10000 = ___________________€ ✓
+                </div>
+
+                <div class="solution-space">
+                    <strong>D) CONFRONTO CON COMPETITOR:</strong><br><br>
+                    Il competitor vende a 1200€.<br>
+                    Ricavi competitor: R(1200) = ___________________€<br><br>
+                    Se vendiamo a 1000€:<br>
+                    • I nostri ricavi: ___________________€<br>
+                    • La nostra domanda: ___________________unità<br><br>
+                    Domanda al competitor (assumendo stesso modello): D(1200) = ___________________<br><br>
+                    <strong>Conclusione strategica:</strong> Vendendo a 1000€ invece che 1200€:<br>
+                    • Otteniamo ricavi __________ (maggiori/minori) per noi<br>
+                    • Vendiamo __________ (più/meno) unità<br>
+                    • Catturiamo più quota di mercato
+                </div>
+
+                <div class="solution-space">
+                    <strong>E) ELASTICITÀ INTUITIVA:</strong><br><br>
+                    Cosa succede se variamo leggermente il prezzo ottimale?<br><br>
+                    Se p = 900€:<br>
+                    D(900) = _________<br>
+                    R(900) = 900 · D(900) = _________€<br><br>
+                    Se p = 1100€:<br>
+                    D(1100) = _________<br>
+                    R(1100) = 1100 · D(1100) = _________€<br><br>
+                    Entrambi i ricavi sono __________ (maggiori/minori) di R(1000)!<br><br>
+                    Questo conferma che 1000€ è il massimo!
+                </div>
+            </div>
+
+            <div class="task-box">
+                <h3>📝 TASK 4: Analisi Strategica (30 minuti)</h3>
+                
+                <div class="solution-space">
+                    <strong>A) RICAVI vs PROFITTI:</strong><br><br>
+                    <strong>⚠️ ATTENZIONE:</strong> Massimizzare i ricavi NON è uguale a massimizzare i profitti!<br><br>
+                    Il CFO calcolerà che il profitto si massimizza a una produzione diversa, 
+                    che corrisponde a un prezzo probabilmente diverso da 1000€.<br><br>
+                    <strong>Domanda di riflessione:</strong> Perché i due obiettivi sono diversi?<br>
+                    ___________________________<br><br>
+                    <em>Suggerimento: I profitti tengono conto anche dei costi!</em>
+                </div>
+
+                <div class="solution-space">
+                    <strong>B) TRADE-OFF PREZZO-VOLUME:</strong><br><br>
+                    A p = 1000€ (ricavo massimo):<br>
+                    • Prezzo: medio<br>
+                    • Volume: medio (10000 unità)<br>
+                    • Ricavo: massimo<br><br>
+                    A p = 500€ (basso):<br>
+                    • Prezzo: basso<br>
+                    • Volume: alto (_____ unità)<br>
+                    • Ricavo: ___________€ (minore del massimo)<br><br>
+                    A p = 1500€ (alto):<br>
+                    • Prezzo: alto<br>
+                    • Volume: basso (_____ unità)<br>
+                    • Ricavo: ___________€ (minore del massimo)<br><br>
+                    <strong>Lezione:</strong> Bisogna bilanciare prezzo e volume per massimizzare i ricavi!
+                </div>
+            </div>
+
+            <div class="alert-box">
+                <strong>📋 PREPARAZIONE PER IL GRUPPO BASE:</strong><br><br>
+                Prima di tornare al tuo gruppo base, assicurati di saper spiegare:<br>
+                ✅ La legge della domanda (prezzo alto → domanda bassa)<br>
+                ✅ Come si calcolano i ricavi (R = p · D)<br>
+                ✅ Perché R(p) è una parabola<br>
+                ✅ Il prezzo ottimale per massimizzare i ricavi (vertice)<br>
+                ✅ Il trade-off tra prezzo e volume<br>
+                ✅ La differenza tra massimizzare ricavi e massimizzare profitti
+            </div>
+
+            <div class="checklist">
+                <h4>✓ Checklist Competenze CTO</h4>
+                <label><input type="checkbox"> Studio funzione lineare (domanda)</label>
+                <label><input type="checkbox"> Prodotto di funzioni (ricavi)</label>
+                <label><input type="checkbox"> Sviluppo prodotto notevole</label>
+                <label><input type="checkbox"> Massimo di parabola (vertice)</label>
+                <label><input type="checkbox"> Interpretazione economica del massimo</label>
+                <label><input type="checkbox"> Trade-off prezzo-volume</label>
+                <label><input type="checkbox"> Distinzione ricavi vs profitti</label>
+            </div>
+        </div>
+
+        <!-- SEZIONE ENGINEERING -->
+        <div id="engineering" class="section engineering">
+            <h2>⚙️ GRUPPO ESPERTI ENGINEERING - Crescita & Penetrazione</h2>
+            
+            <div class="story-box">
+                <strong>🎯 IL TUO RUOLO:</strong><br><br>
+                Come Engineer, devi modellare la <strong>penetrazione del mercato</strong> nel tempo. 
+                Quanti anni ci vorranno per raggiungere una certa quota? Quanto velocemente cresceremo?
+            </div>
+
+            <div class="alert-box info">
+                <strong>🎯 OBIETTIVO DI QUESTO GRUPPO:</strong><br>
+                Tutti gli Engineers lavorano insieme per diventare esperti in:<br>
+                • Modellazione della crescita con funzioni esponenziali<br>
+                • Analisi degli asintoti (saturazione del mercato)<br>
+                • Calcolo del tempo per raggiungere target<br>
+                • Stima della velocità di crescita usando <strong>incrementi finiti</strong><br><br>
+                <strong>⏰ TEMPO: 2 ore</strong>
+            </div>
+
+            <h3>📊 LA FUNZIONE DI PENETRAZIONE</h3>
+            <div class="function-box">
+                Q(t) = 80(1 - e^(-0.4t))<br><br>
+                dove:<br>
+                • t = tempo in anni dall'introduzione<br>
+                • Q(t) = quota di mercato penetrata (%)<br>
+                • 80 = quota massima raggiungibile (asintoto)<br>
+                • 0.4 = tasso di crescita iniziale
+            </div>
+
+            <div class="task-box">
+                <h3>📝 TASK 1: Analisi Preliminare (30 minuti)</h3>
+                
+                <div class="solution-space">
+                    <strong>A) VALORI CARATTERISTICI:</strong><br><br>
+                    All'anno 0 (lancio): Q(0) = 80(1 - e^0) = 80(1 - 1) = _____% <br><br>
+                    Dopo 1 anno: Q(1) = 80(1 - e^(-0.4)) ≈ 80(1 - 0.670) = _____% <br><br>
+                    Dopo 3 anni: Q(3) = 80(1 - e^(-1.2)) ≈ 80(1 - 0.301) = _____% <br><br>
+                    Dopo 5 anni: Q(5) = 80(1 - e^(-2)) ≈ 80(1 - 0.135) = _____% <br><br>
+                    Dopo 10 anni: Q(10) = 80(1 - e^(-4)) ≈ 80(1 - 0.018) = _____%
+                </div>
+
+                <div class="solution-space">
+                    <strong>B) ASINTOTO ORIZZONTALE:</strong><br><br>
+                    lim (t→+∞) Q(t) = lim (t→+∞) 80(1 - e^(-0.4t))<br><br>
+                    Quando t → +∞, cosa succede a e^(-0.4t)? → _____<br><br>
+                    Quindi: lim (t→+∞) Q(t) = 80(1 - 0) = _____% <br><br>
+                    <strong>Interpretazione:</strong> Non possiamo superare l'80% di quota di mercato, 
+                    non importa quanto tempo aspettiamo. C'è sempre un 20% di mercato che non conquisteremo!
+                </div>
+
+                <div class="solution-space">
+                    <strong>C) DOMINIO:</strong><br><br>
+                    La funzione Q(t) è definita per t ≥ 0 (non ha senso parlare di tempo negativo).<br><br>
+                    Non ci sono asintoti verticali perché e^(-0.4t) è definita ovunque.
+                </div>
+
+                <div class="solution-space">
+                    <strong>D) STUDIO DEL SEGNO:</strong><br><br>
+                    Q(t) = 80(1 - e^(-0.4t))<br><br>
+                    Siccome e^(-0.4t) > 0 sempre, e in particolare 0 < e^(-0.4t) < 1 per t > 0:<br>
+                    • (1 - e^(-0.4t)) è sempre __________ (positivo/negativo) per t > 0<br>
+                    • Quindi Q(t) è sempre __________ (positivo/negativo)<br><br>
+                    Questo ha senso: la quota di mercato non può essere negativa!
+                </div>
+            </div>
+
+            <div class="task-box">
+                <h3>📝 TASK 2: Tempo per Raggiungere Target (40 minuti)</h3>
+                
+                <div class="solution-space">
+                    <strong>A) TARGET: 50% DI QUOTA</strong><br><br>
+                    Vogliamo sapere quando Q(t) = 50:<br>
+                    80(1 - e^(-0.4t)) = 50<br>
+                    1 - e^(-0.4t) = 50/80<br>
+                    1 - e^(-0.4t) = 0.625<br>
+                    e^(-0.4t) = 1 - 0.625 = 0.375<br><br>
+                    Applico il logaritmo naturale a entrambi i lati:<br>
+                    ln(e^(-0.4t)) = ln(0.375)<br>
+                    -0.4t = ln(0.375)<br>
+                    -0.4t ≈ -0.981<br>
+                    t ≈ 0.981/0.4 = ___________________anni<br><br>
+                    Ci vorranno circa _____ anni per raggiungere il 50% di quota!
+                </div>
+
+                <div class="solution-space">
+                    <strong>B) TARGET: 60% DI QUOTA</strong><br><br>
+                    80(1 - e^(-0.4t)) = 60<br>
+                    e^(-0.4t) = 1 - 60/80 = 0.25<br>
+                    -0.4t = ln(0.25) = _________<br>
+                    t = ___________________anni
+                </div>
+
+                <div class="solution-space">
+                    <strong>C) TARGET: 70% DI QUOTA</strong><br><br>
+                    80(1 - e^(-0.4t)) = 70<br>
+                    e^(-0.4t) = 1 - 70/80 = _________<br>
+                    -0.4t = ln(_________) = _________<br>
+                    t = ___________________anni
+                </div>
+
+                <div class="solution-space">
+                    <strong>D) TARGET: 78% DI QUOTA</strong><br><br>
+                    80(1 - e^(-0.4t)) = 78<br>
+                    e^(-0.4t) = 1 - 78/80 = _________<br>
+                    -0.4t = ln(_________) = _________<br>
+                    t = ___________________anni<br><br>
+                    <strong>Osservazione:</strong> Avvicinarsi all'80% richiede molto più tempo!
+                </div>
+
+                <div class="solution-space">
+                    <strong>E) TABELLA RIASSUNTIVA:</strong><br><br>
+                    <table style="width: 100%; margin-top: 10px;">
+                        <tr>
+                            <th>Target Quota (%)</th>
+                            <th>Tempo (anni)</th>
+                            <th>Osservazione</th>
+                        </tr>
+                        <tr>
+                            <td>50</td>
+                            <td>_________</td>
+                            <td>Metà del potenziale</td>
+                        </tr>
+                        <tr>
+                            <td>60</td>
+                            <td>_________</td>
+                            <td>3/4 del potenziale</td>
+                        </tr>
+                        <tr>
+                            <td>70</td>
+                            <td>_________</td>
+                            <td>7/8 del potenziale</td>
+                        </tr>
+                        <tr>
+                            <td>78</td>
+                            <td>_________</td>
+                            <td>Quasi saturazione</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+
+            <div class="task-box">
+                <h3>📝 TASK 3: Velocità di Crescita (50 minuti)</h3>
+                
+                <div class="tip-box">
+                    <strong>💡 INCREMENTI FINITI (senza derivate):</strong><br>
+                    Per stimare quanto velocemente cresce Q(t), calcoliamo gli incrementi anno per anno:<br><br>
+                    ΔQ/Δt = [Q(t+1) - Q(t)] / 1<br><br>
+                    Questo ci dà la crescita media di quota di mercato per anno.
+                </div>
+
+                <div class="solution-space">
+                    <strong>A) CRESCITA NEL PRIMO ANNO:</strong><br><br>
+                    Q(0) = 0%<br>
+                    Q(1) ≈ 26.4%<br><br>
+                    Incremento nel primo anno:<br>
+                    ΔQ = Q(1) - Q(0) = _________% <br>
+                    Velocità media = ΔQ/Δt = _________% /anno
+                </div>
+
+                <div class="solution-space">
+                    <strong>B) CRESCITA DAL PRIMO AL SECONDO ANNO:</strong><br><br>
+                    Q(1) ≈ 26.4%<br>
+                    Q(2) = 80(1 - e^(-0.8)) ≈ 80(1 - 0.449) = _________%<br><br>
+                    Incremento:<br>
+                    ΔQ = Q(2) - Q(1) = _________% <br>
+                    Velocità media = _________% /anno
+                </div>
+
+                <div class="solution-space">
+                    <strong>C) CRESCITA DAL SECONDO AL TERZO ANNO:</strong><br><br>
+                    Q(2) ≈ _________% <br>
+                    Q(3) ≈ 55.9%<br><br>
+                    Incremento:<br>
+                    ΔQ = Q(3) - Q(2) = _________% <br>
+                    Velocità media = _________% /anno
+                </div>
+
+                <div class="solution-space">
+                    <strong>D) CRESCITA DAL QUINTO AL SESTO ANNO:</strong><br><br>
+                    Q(5) ≈ 69.2%<br>
+                    Q(6) = 80(1 - e^(-2.4)) ≈ 80(1 - 0.091) = _________%<br><br>
+                    Incremento:<br>
+                    ΔQ = Q(6) - Q(5) = _________% <br>
+                    Velocità media = _________% /anno
+                </div>
+
+                <div class="solution-space">
+                    <strong>E) TABELLA CRESCITA:</strong><br><br>
+                    <table style="width: 100%; margin-top: 10px;">
+                        <tr>
+                            <th>Periodo</th>
+                            <th>ΔQ (%)</th>
+                            <th>Velocità (%/anno)</th>
+                        </tr>
+                        <tr>
+                            <td>Anno 0 → 1</td>
+                            <td>_________</td>
+                            <td>_________</td>
+                        </tr>
+                        <tr>
+                            <td>Anno 1 → 2</td>
+                            <td>_________</td>
+                            <td>_________</td>
+                        </tr>
+                        <tr>
+                            <td>Anno 2 → 3</td>
+                            <td>_________</td>
+                            <td>_________</td>
+                        </tr>
+                        <tr>
+                            <td>Anno 5 → 6</td>
+                            <td>_________</td>
+                            <td>_________</td>
+                        </tr>
+                    </table><br>
+                    <strong>Cosa osservi?</strong><br>
+                    La crescita __________ (accelera/rallenta) nel tempo!<br><br>
+                    Questo è tipico delle funzioni con esponenziale negativo: 
+                    crescita rapida all'inizio, poi rallentamento verso l'asintoto.
+                </div>
+            </div>
+
+            <div class="task-box">
+                <h3>📝 TASK 4: Grafico e Interpretazione (30 minuti)</h3>
+                
+                <div class="solution-space">
+                    <strong>A) GRAFICO QUALITATIVO:</strong><br><br>
+                    Disegna Q(t) su un grafico:<br>
+                    • Parte da (0, 0)<br>
+                    • Crescita rapida inizialmente<br>
+                    • Rallenta progressivamente<br>
+                    • Tende a 80% (asintoto orizzontale)<br>
+                    • Mai decrescente (sempre crescente)<br><br>
+                    [Spazio per il grafico]<br><br>
+                    Questa forma a "S" (curva sigmoidea) è tipica della diffusione di innovazioni!
+                </div>
+
+                <div class="solution-space">
+                    <strong>B) INTERPRETAZIONE STRATEGICA:</strong><br><br>
+                    <strong>Fase 1 (anni 0-2):</strong> Crescita rapida, early adopters<br>
+                    • Investimenti in marketing massimi<br>
+                    • Feedback continuo per migliorare prodotto<br><br>
+                    <strong>Fase 2 (anni 3-5):</strong> Crescita sostenuta, mainstream<br>
+                    • Ottimizzazione processi produttivi<br>
+                    • Economie di scala<br><br>
+                    <strong>Fase 3 (anni 6+):</strong> Saturazione, late adopters<br>
+                    • Costi marketing crescenti per ogni nuovo cliente<br>
+                    • Preparare innovazioni per il prossimo ciclo
+                </div>
+
+                <div class="solution-space">
+                    <strong>C) LIMITI DEL MODELLO:</strong><br><br>
+                    <strong>Cosa NON considera questo modello?</strong><br>
+                    • Competizione (nuovi competitor)<br>
+                    • Cambiamenti tecnologici<br>
+                    • Saturazione del bisogno<br>
+                    • Crisi economiche<br><br>
+                    <strong>Per quanto tempo è affidabile?</strong><br>
+                    Probabilmente per i primi 3-5 anni. Oltre, i fattori esterni diventano troppo imprevedibili.
+                </div>
+            </div>
+
+            <div class="alert-box">
+                <strong>📋 PREPARAZIONE PER IL GRUPPO BASE:</strong><br><br>
+                Prima di tornare al tuo gruppo base, assicurati di saper spiegare:<br>
+                ✅ La forma della curva di penetrazione (crescita → saturazione)<br>
+                ✅ Il significato dell'asintoto (limite fisico al 80%)<br>
+                ✅ Come calcolare il tempo per raggiungere un target (logaritmi)<br>
+                ✅ Perché la crescita rallenta nel tempo (incrementi finiti)<br>
+                ✅ Le fasi di adozione del prodotto<br>
+                ✅ I limiti del modello matematico
+            </div>
+
+            <div class="checklist">
+                <h4>✓ Checklist Competenze Engineering</h4>
+                <label><input type="checkbox"> Funzioni esponenziali</label>
+                <label><input type="checkbox"> Calcolo di limiti (asintoti)</label>
+                <label><input type="checkbox"> Equazioni logaritmiche</label>
+                <label><input type="checkbox"> Analisi di incrementi finiti</label>
+                <label><input type="checkbox"> Interpretazione grafico funzioni esponenziali</label>
+                <label><input type="checkbox"> Analisi dei limiti del modello</label>
+                <label><input type="checkbox"> Applicazione a ciclo di vita prodotto</label>
+            </div>
+        </div>
+
+        <!-- SEZIONE INTEGRAZIONE -->
+        <div id="integration" class="section integration">
+            <h2>🎯 FASE 3: INTEGRAZIONE E BUSINESS PLAN</h2>
+            
+            <div class="story-box">
+                <strong>🎯 OBIETTIVO FINALE:</strong><br><br>
+                Ora che ogni esperto ha analizzato il proprio settore, è tempo di <strong>integrare</strong> 
+                tutte le analisi per creare una <strong>strategia coerente</strong>. Non sempre le diverse 
+                ottimizzazioni puntano nella stessa direzione!
+            </div>
+
+            <h3>📊 STEP 1: Condivisione delle Analisi (30 minuti)</h3>
+            
+            <div class="task-box">
+                <h3>Ogni esperto presenta ai compagni (max 7 minuti ciascuno):</h3>
+                
+                <div class="checklist">
+                    <h4>✓ CEO - Marketing:</h4>
+                    <label><input type="checkbox"> Funzione quota di mercato M(p)</label>
+                    <label><input type="checkbox"> Prezzo per massimizzare la quota</label>
+                    <label><input type="checkbox"> Posizione vs competitor (1200€)</label>
+                    <label><input type="checkbox"> Trade-off quota/prezzo</label>
+                </div>
+
+                <div class="checklist">
+                    <h4>✓ CFO - Finanza:</h4>
+                    <label><input type="checkbox"> Struttura costi C(x)</label>
+                    <label><input type="checkbox"> Break-even points (inferiore e superiore)</label>
+                    <label><input type="checkbox"> Quantità ottimale per profitto massimo</label>
+                    <label><input type="checkbox"> Profitto massimo raggiungibile</label>
+                </div>
+
+                <div class="checklist">
+                    <h4>✓ CTO - Ricavi:</h4>
+                    <label><input type="checkbox"> Funzione domanda D(p)</label>
+                    <label><input type="checkbox"> Prezzo per massimizzare ricavi (1000€)</label>
+                    <label><input type="checkbox"> Ricavi massimi (10M€)</label>
+                    <label><input type="checkbox"> Differenza tra max ricavi e max profitti</label>
+                </div>
+
+                <div class="checklist">
+                    <h4>✓ Engineering - Crescita:</h4>
+                    <label><input type="checkbox"> Curva di penetrazione Q(t)</label>
+                    <label><input type="checkbox"> Tempo per raggiungere target (es. 50%)</label>
+                    <label><input type="checkbox"> Velocità di crescita (rallenta nel tempo)</label>
+                    <label><input type="checkbox"> Fasi del ciclo di vita prodotto</label>
+                </div>
+            </div>
+
+            <h3>⚡ STEP 2: Identificazione delle Contraddizioni (45 minuti)</h3>
+            
+            <div class="task-box">
+                <h3>🤔 Domande da Discutere nel Gruppo:</h3>
+                
+                <div class="solution-space">
+                    <strong>CONTRADDIZIONE 1: Prezzo Ottimale</strong><br><br>
+                    • Il <strong>CEO</strong> suggerisce di vendere il più economico possibile per massimizzare la quota<br>
+                    • Il <strong>CTO</strong> suggerisce 1000€ per massimizzare i ricavi<br>
+                    • Il <strong>CFO</strong> ha calcolato che il profitto massimo è a 6000 unità, che corrisponde a quale prezzo?<br><br>
+                    Collegamento: Se produciamo 6000 unità ottimali (secondo CFO), quale prezzo dobbiamo scegliere 
+                    affinché la domanda sia esattamente 6000?<br>
+                    D(p) = 6000<br>
+                    20000 - 10p = 6000<br>
+                    p = ___________________€<br><br>
+                    <strong>Quale prezzo scegliete e perché?</strong><br>
+                    ___________________________<br>
+                    ___________________________<br>
+                    ___________________________
+                </div>
+
+                <div class="solution-space">
+                    <strong>CONTRADDIZIONE 2: Quantità da Produrre</strong><br><br>
+                    • Il <strong>CFO</strong> ha calcolato che la quantità ottimale è 6000 unità (max profitto)<br>
+                    • Ma se il prezzo è 1400€, la domanda è solo 6000 unità<br>
+                    • Se vogliamo vendere di più (maggiore quota di mercato), dobbiamo abbassare il prezzo<br>
+                    • Ma abbassando il prezzo, diminuiamo i profitti!<br><br>
+                    <strong>Come bilanciate profitto vs crescita rapida?</strong><br>
+                    ___________________________<br>
+                    ___________________________<br>
+                    ___________________________
+                </div>
+
+                <div class="solution-space">
+                    <strong>CONTRADDIZIONE 3: Tempistiche di Crescita</strong><br><br>
+                    • L'<strong>Engineering</strong> ha mostrato che la penetrazione di mercato richiede tempo<br>
+                    • Ma il <strong>CFO</strong> vuole raggiungere rapidamente il break-even<br>
+                    • Prezzi bassi → più vendite → quota alta → ma profitti bassi inizialmente<br>
+                    • Prezzi alti → meno vendite → quota bassa → ma profitti alti per unità<br><br>
+                    <strong>Quale strategia scegliete per i primi 3 anni?</strong><br>
+                    ___________________________<br>
+                    ___________________________<br>
+                    ___________________________
+                </div>
+
+                <div class="solution-space">
+                    <strong>CONTRADDIZIONE 4: Competitor</strong><br><br>
+                    • Il competitor vende a 1200€<br>
+                    • Se vendiamo a 1400€ (profitto ottimale), siamo più cari<br>
+                    • Se vendiamo a 1000€ (ricavi ottimali), siamo più economici<br>
+                    • Come ci posizioniamo?<br><br>
+                    <strong>Strategia competitiva:</strong><br>
+                    ___________________________<br>
+                    ___________________________<br>
+                    ___________________________
+                </div>
+            </div>
+
+            <h3>🎯 STEP 3: Strategia Integrata (60 minuti)</h3>
+            
+            <div class="task-box">
+                <h3>Decidete la vostra strategia rispondendo a queste domande:</h3>
+                
+                <div class="solution-space">
+                    <strong>1. PREZZO DI LANCIO (Anno 1):</strong><br><br>
+                    Prezzo scelto: _________________€<br><br>
+                    Giustificazione (integrando tutte e 4 le analisi):<br>
+                    ___________________________<br>
+                    ___________________________<br>
+                    ___________________________<br><br>
+                    Domanda attesa: D(p) = _________________unità<br>
+                    Ricavi attesi: R = _________________€<br>
+                    Profitto atteso: P ≈ _________________€<br>
+                    Quota di mercato: M(p) = _________________%
+                </div>
+
+                <div class="solution-space">
+                    <strong>2. QUANTITÀ DI PRODUZIONE (Anno 1):</strong><br><br>
+                    Quantità pianificata: _________________unità<br><br>
+                    È tra i due break-even? _____<br>
+                    Margine di sicurezza rispetto a break-even inferiore: _________________<br><br>
+                    Giustificazione:<br>
+                    ___________________________<br>
+                    ___________________________
+                </div>
+
+                <div class="solution-space">
+                    <strong>3. STRATEGIA TEMPORALE (5 anni):</strong><br><br>
+                    <strong>Anno 1:</strong> Prezzo = _____€, Target quota = _____%<br>
+                    Focus: ___________________________<br><br>
+                    <strong>Anno 2-3:</strong> Prezzo = _____€, Target quota = _____%<br>
+                    Focus: ___________________________<br><br>
+                    <strong>Anno 4-5:</strong> Prezzo = _____€, Target quota = _____%<br>
+                    Focus: ___________________________<br><br>
+                    Giustificazione della variazione prezzi nel tempo:<br>
+                    ___________________________<br>
+                    ___________________________
+                </div>
+
+                <div class="solution-space">
+                    <strong>4. POSIZIONAMENTO COMPETITIVO:</strong><br><br>
+                    Rispetto al competitor (1200€), siamo:<br>
+                    □ Più economici (penetrazione)<br>
+                    □ Stesso prezzo (parity)<br>
+                    □ Più cari (premium)<br><br>
+                    Perché questa scelta?<br>
+                    ___________________________<br>
+                    ___________________________<br><br>
+                    Come differenziamo il prodotto?<br>
+                    ___________________________<br>
+                    ___________________________
+                </div>
+
+                <div class="solution-space">
+                    <strong>5. OBIETTIVI FINANZIARI:</strong><br><br>
+                    Break-even atteso (anno): _________________<br>
+                    Profitto cumulativo 5 anni: _________________€<br>
+                    Quota di mercato a 5 anni: _________________%<br><br>
+                    Trade-off scelto:<br>
+                    □ Massimizzare profitti a breve<br>
+                    □ Massimizzare quota di mercato<br>
+                    □ Bilanciamento profitti/crescita<br><br>
+                    Spiegazione:<br>
+                    ___________________________<br>
+                    ___________________________
+                </div>
+
+                <div class="solution-space">
+                    <strong>6. RISCHI E MITIGAZIONI:</strong><br><br>
+                    <strong>Rischio 1:</strong> _____________________________<br>
+                    <strong>Mitigazione:</strong> _____________________________<br><br>
+                    <strong>Rischio 2:</strong> _____________________________<br>
+                    <strong>Mitigazione:</strong> _____________________________<br><br>
+                    <strong>Rischio 3:</strong> _____________________________<br>
+                    <strong>Mitigazione:</strong> _____________________________
+                </div>
+            </div>
+
+            <h3>📝 STEP 4: Business Plan (90 minuti)</h3>
+            
+            <div class="alert-box">
+                <strong>📄 STRUTTURA DEL BUSINESS PLAN (2-3 pagine):</strong><br><br>
+                Il vostro business plan deve contenere:
+            </div>
+
+            <div class="task-box">
+                <h3>Template Business Plan:</h3>
+                
+                <div style="background: #f8f9ff; padding: 20px; border-radius: 10px; margin: 15px 0;">
+                    <h4 style="color: #00B894;">1. EXECUTIVE SUMMARY (½ pagina)</h4>
+                    <ul style="margin-left: 30px; margin-top: 10px;">
+                        <li>Prodotto: TechnoWave Smart Projector</li>
+                        <li>Prezzo di lancio e strategia temporale</li>
+                        <li>Obiettivi a 5 anni (profitti, quota, penetrazione)</li>
+                        <li>Posizionamento competitivo</li>
+                    </ul>
+                </div>
+
+                <div style="background: #f8f9ff; padding: 20px; border-radius: 10px; margin: 15px 0;">
+                    <h4 style="color: #00B894;">2. ANALISI MATEMATICA (1 pagina)</h4>
+                    <strong>2.1 Marketing (CEO):</strong>
+                    <ul style="margin-left: 30px; margin-top: 5px;">
+                        <li>Quota di mercato attesa al prezzo scelto</li>
+                        <li>Confronto con competitor</li>
+                        <li>Grafico M(p) con punto scelto evidenziato</li>
+                    </ul>
+                    <strong>2.2 Finanza (CFO):</strong>
+                    <ul style="margin-left: 30px; margin-top: 5px;">
+                        <li>Break-even points</li>
+                        <li>Profitto atteso al volume pianificato</li>
+                        <li>Grafico C(x), R(x), P(x)</li>
+                    </ul>
+                    <strong>2.3 Ricavi (CTO):</strong>
+                    <ul style="margin-left: 30px; margin-top: 5px;">
+                        <li>Ricavi attesi al prezzo scelto</li>
+                        <li>Domanda prevista</li>
+                        <li>Grafico D(p) e R(p)</li>
+                    </ul>
+                    <strong>2.4 Crescita (Engineering):</strong>
+                    <ul style="margin-left: 30px; margin-top: 5px;">
+                        <li>Timeline di penetrazione</li>
+                        <li>Milestone temporali (30%, 50%, 70%)</li>
+                        <li>Grafico Q(t)</li>
+                    </ul>
+                </div>
+
+                <div style="background: #f8f9ff; padding: 20px; border-radius: 10px; margin: 15px 0;">
+                    <h4 style="color: #00B894;">3. STRATEGIA INTEGRATA (½ pagina)</h4>
+                    <ul style="margin-left: 30px; margin-top: 10px;">
+                        <li>Come avete risolto le contraddizioni tra le diverse ottimizzazioni</li>
+                        <li>Compromessi scelti e loro giustificazione</li>
+                        <li>Piano di azione per i primi 3 anni</li>
+                    </ul>
+                </div>
+
+                <div style="background: #f8f9ff; padding: 20px; border-radius: 10px; margin: 15px 0;">
+                    <h4 style="color: #00B894;">4. RISCHI E LIMITI (½ pagina)</h4>
+                    <ul style="margin-left: 30px; margin-top: 10px;">
+                        <li>Assunzioni del modello matematico</li>
+                        <li>Rischi principali (competizione, tecnologia, mercato)</li>
+                        <li>Piano di contingenza</li>
+                    </ul>
+                </div>
+            </div>
+
+            <h3>🎤 STEP 5: Presentazione (30 minuti)</h3>
+            
+            <div class="task-box">
+                <h3>Preparate una presentazione di 10 minuti:</h3>
+                
+                <div style="background: #fff3cd; padding: 20px; border-radius: 10px; margin: 15px 0;">
+                    <strong>⏰ STRUTTURA PRESENTAZIONE (10 min + 5 min Q&A):</strong><br><br>
+                    <strong>Slide 1 (1 min):</strong> Executive Summary<br>
+                    • Chi siete (gruppo X)<br>
+                    • Prezzo scelto e strategia in 30 secondi<br><br>
+                    <strong>Slides 2-5 (4 min):</strong> Le 4 Analisi<br>
+                    • 1 minuto per analisi (CEO, CFO, CTO, Engineering)<br>
+                    • Solo i punti chiave, non tutti i calcoli!<br><br>
+                    <strong>Slide 6 (2 min):</strong> Contraddizioni e Compromessi<br>
+                    • Mostrate i trade-off affrontati<br>
+                    • Spiegate perché avete scelto quel particolare bilanciamento<br><br>
+                    <strong>Slide 7 (2 min):</strong> Piano Temporale<br>
+                    • Timeline 5 anni<br>
+                    • Milestone finanziarie e di mercato<br><br>
+                    <strong>Slide 8 (1 min):</strong> Conclusioni<br>
+                    • Messaggio finale<br>
+                    • Call to action
+                </div>
+
+                <div class="alert-box info">
+                    <strong>💡 SUGGERIMENTI PER LA PRESENTAZIONE:</strong><br><br>
+                    ✅ Usate i grafici preparati nelle analisi<br>
+                    ✅ Evidenziate i numeri chiave (prezzo, profitto, quota)<br>
+                    ✅ Spiegate il PERCHÉ delle scelte, non solo i calcoli<br>
+                    ✅ Ogni membro del gruppo parla (2.5 min ciascuno)<br>
+                    ✅ Preparate risposte alle domande prevedibili<br><br>
+                    ❌ NON leggete il business plan parola per parola<br>
+                    ❌ NON mostrate tutti i calcoli matematici<br>
+                    ❌ NON superate i 10 minuti
+                </div>
+            </div>
+
+            <h3>📊 Criteri di Valutazione Finale</h3>
+            
+            <table>
+                <tr>
+                    <th>Criterio</th>
+                    <th>Peso</th>
+                    <th>Cosa Valutiamo</th>
+                </tr>
+                <tr>
+                    <td><strong>Correttezza matematica</strong></td>
+                    <td>25%</td>
+                    <td>Calcoli corretti, uso formule, interpretazioni</td>
+                </tr>
+                <tr>
+                    <td><strong>Integrazione analisi</strong></td>
+                    <td>25%</td>
+                    <td>Capacità di connettere le 4 prospettive</td>
+                </tr>
+                <tr>
+                    <td><strong>Qualità compromessi</strong></td>
+                    <td>20%</td>
+                    <td>Ragionevolezza decisioni, giustificazioni</td>
+                </tr>
+                <tr>
+                    <td><strong>Business plan</strong></td>
+                    <td>15%</td>
+                    <td>Chiarezza, completezza, professionalità</td>
+                </tr>
+                <tr>
+                    <td><strong>Presentazione</strong></td>
+                    <td>15%</td>
+                    <td>Efficacia comunicativa, lavoro di team</td>
+                </tr>
+            </table>
+
+            <div class="alert-box success">
+                <strong>🎯 OBIETTIVO DIDATTICO PRINCIPALE:</strong><br><br>
+                Questo progetto vi insegna che:<br>
+                • La matematica aiuta a <strong>quantificare</strong> problemi complessi<br>
+                • Spesso gli obiettivi sono in <strong>conflitto</strong> (profitto vs crescita)<br>
+                • Le decisioni aziendali richiedono <strong>compromessi ragionevoli</strong><br>
+                • I modelli matematici hanno <strong>limiti</strong> e assunzioni<br>
+                • Il lavoro di team richiede <strong>integrazione</strong> di competenze diverse<br><br>
+                Queste competenze sono fondamentali per qualsiasi carriera STEM!
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function showSection(sectionId) {
+            // Nascondi tutte le sezioni
+            const sections = document.querySelectorAll('.section');
+            sections.forEach(section => section.classList.remove('active'));
+            
+            // Mostra la sezione selezionata
+            const targetSection = document.getElementById(sectionId);
+            if (targetSection) {
+                targetSection.classList.add('active');
+                // Scroll to top
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+        }
+        
+        // Mostra la sezione intro all'avvio
+        document.addEventListener('DOMContentLoaded', function() {
+            showSection('intro');
+        });
+    </script>
+</body>
+</html>
